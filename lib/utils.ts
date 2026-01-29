@@ -1,6 +1,12 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
+/**
+ * Combine multiple class name inputs into a single string with Tailwind class conflict resolution.
+ *
+ * @param inputs - Class name values to combine (accepts anything supported by `clsx`)
+ * @returns The merged class string with Tailwind classes resolved
+ */
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -21,11 +27,22 @@ export const formatTimeAgo = (timestamp: number) => {
   }
 };
 
+/**
+ * Creates a pause for the specified duration.
+ *
+ * @param ms - Delay duration in milliseconds
+ * @returns A promise that resolves with no value after the specified delay
+ */
 export function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// Formatted string like "$3.10T", "$900.00B", "$25.00M" or "$999,999.99"
+/**
+ * Format a market capitalization value into a compact USD string.
+ *
+ * @param marketCapUsd - Market capitalization in US dollars.
+ * @returns The formatted string: `N/A` if the input is not finite or <= 0; for values >= 1e12 returns `$x.xxT`, for values >= 1e9 returns `$x.xxB`, for values >= 1e6 returns `$x.xxM`, otherwise returns the full dollar amount with two decimals (e.g. `$999,999.99`).
+ */
 export function formatMarketCapValue(marketCapUsd: number): string {
   if (!Number.isFinite(marketCapUsd) || marketCapUsd <= 0) return 'N/A';
 

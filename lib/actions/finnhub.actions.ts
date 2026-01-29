@@ -27,6 +27,14 @@ export interface NewsArticle {
     symbol?: string;
 }
 
+/**
+ * Fetches JSON from the given URL and returns the parsed response.
+ *
+ * @param url - The request URL to fetch JSON from
+ * @param revalidateSeconds - If provided, enables caching with the given revalidation interval (seconds); if omitted, the request is performed without caching
+ * @returns The parsed JSON response as type `T`
+ * @throws Error if the HTTP response has a non-OK status
+ */
 async function fetchJSON<T>(
     url: string,
     revalidateSeconds?: number
@@ -53,6 +61,14 @@ async function fetchJSON<T>(
     return response.json() as Promise<T>;
 }
 
+/**
+ * Type guard that verifies a value has the required fields of a FinnhubArticle.
+ *
+ * Checks for string `headline`, `summary`, `source`, `url` and numeric `datetime`.
+ *
+ * @param article - Value to validate as a FinnhubArticle
+ * @returns `true` if `article` has the required FinnhubArticle fields, `false` otherwise.
+ */
 function validateArticle(article: unknown): article is FinnhubArticle {
     if (typeof article !== 'object' || article === null) return false;
     
@@ -66,6 +82,13 @@ function validateArticle(article: unknown): article is FinnhubArticle {
     );
 }
 
+/**
+ * Convert a FinnhubArticle into a NewsArticle suitable for public use.
+ *
+ * @param article - The FinnhubArticle to convert
+ * @param symbol - Optional stock symbol to include on the resulting article
+ * @returns A NewsArticle with `datetime` converted to a `Date`, `image` defaulted to an empty string when missing, and `symbol` included if provided
+ */
 function formatArticle(article: FinnhubArticle, symbol?: string): NewsArticle {
     return {
         id: `${article.id}`,
@@ -145,6 +168,12 @@ export const getNews = async (symbols?: string[]): Promise<NewsArticle[]> => {
     }
 };
 
+/**
+ * Fetches up to six recent general news articles from Finnhub.
+ *
+ * Retrieves general-category articles, validates and deduplicates them, and returns the results sorted by publication datetime (newest first). On error or when no valid articles are available, returns an empty array.
+ *
+ * @returns An array of `NewsArticle` objects sorted by `datetime` descending; contains at most six articles.
 async function getGeneralNews(): Promise<NewsArticle[]> {
     try {
         if (!FINNHUB_API_KEY) {
