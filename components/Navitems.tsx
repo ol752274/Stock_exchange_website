@@ -13,7 +13,7 @@ const Navitems = ({initialStocks}: {initialStocks: any[]}) => {
     if (path === '/') return pathname === '/'
     return pathname.startsWith(path)
   }
-
+  //this will solve the error in the navbar
   return (
     <ul className="flex flex-col sm:flex-row p-2 gap-3 sm:gap-10 font-medium">
       {NAV_ITEMS.map((item) => {
